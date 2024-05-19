@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
@@ -43,7 +44,11 @@ func main() {
 
 	router.HandleFunc("/api/v1/get-stats", GetStats).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	corsOrigins := handlers.AllowedOrigins([]string{"*"})
+	corsMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	corsHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(corsOrigins, corsMethods, corsHeaders)(router)))
 }
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
