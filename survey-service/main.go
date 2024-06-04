@@ -42,11 +42,9 @@ func main() {
 
 	router.HandleFunc("/api/v1/submit-answer", SubmitAnswer).Methods("POST")
 	router.HandleFunc("/api/v1/submit-report", SubmitReport).Methods("POST")
-	//router.HandleFunc("/api/v1/submit-survey", SubmitSurvey).Methods("POST")
 
 	router.HandleFunc("/api/v1/get-survey-answer", GetAllSurveyAnswers).Methods("GET")
 	router.HandleFunc("/api/v1/get-survey-answer/{survey_answer_id}", GetSurveyAnswerByID).Methods("GET")
-	//router.HandleFunc("/api/v1/get-survey/{survey_id}", GetSurveyAnswerBySurveyID).Methods("GET")
 
 	router.HandleFunc("/api/v1/get-report", GetAllReports).Methods("GET")
 	router.HandleFunc("/api/v1/get-report/{report_id}", GetReportByID).Methods("GET")
@@ -317,7 +315,11 @@ func GetAllReports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	_, err = json.Marshal(reports)
+	jsonData, err := json.Marshal(reports)
+	if err != nil {
+		return
+	}
+	_, err = w.Write(jsonData)
 	if err != nil {
 		return
 	}
