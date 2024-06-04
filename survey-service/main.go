@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"survey-service/database"
 	"survey-service/payload"
@@ -16,9 +17,15 @@ import (
 
 var db *mongo.Client
 var err error
+var port = ":8080"
+
+var db_ip = os.Getenv("DB_IP")
+var db_port = os.Getenv("DB_PORT")
+var db_user = os.Getenv("DB_USER")
+var db_password = os.Getenv("DB_PASSWORD")
 
 func main() {
-	db, err = database.ConnectToDatabase()
+	db, err = database.ConnectToDatabase(db_ip, db_port, db_user, db_password)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,9 +42,11 @@ func main() {
 
 	router.HandleFunc("/api/v1/submit-answer", SubmitAnswer).Methods("POST")
 	router.HandleFunc("/api/v1/submit-report", SubmitReport).Methods("POST")
+	//router.HandleFunc("/api/v1/submit-survey", SubmitSurvey).Methods("POST")
 
 	router.HandleFunc("/api/v1/get-survey-answer", GetAllSurveyAnswers).Methods("GET")
 	router.HandleFunc("/api/v1/get-survey-answer/{survey_answer_id}", GetSurveyAnswerByID).Methods("GET")
+	//router.HandleFunc("/api/v1/get-survey/{survey_id}", GetSurveyAnswerBySurveyID).Methods("GET")
 
 	router.HandleFunc("/api/v1/get-report", GetAllReports).Methods("GET")
 	router.HandleFunc("/api/v1/get-report/{report_id}", GetReportByID).Methods("GET")
@@ -48,7 +57,7 @@ func main() {
 	corsMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 	corsHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 
-	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(corsOrigins, corsMethods, corsHeaders)(router)))
+	log.Fatal(http.ListenAndServe(port, handlers.CORS(corsOrigins, corsMethods, corsHeaders)(router)))
 }
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
