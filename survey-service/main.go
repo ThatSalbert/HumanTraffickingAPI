@@ -19,13 +19,13 @@ var db *mongo.Client
 var err error
 var port = ":8080"
 
-var db_ip = os.Getenv("DB_IP")
-var db_port = os.Getenv("DB_PORT")
-var db_user = os.Getenv("DB_USER")
-var db_password = os.Getenv("DB_PASSWORD")
+var dbIp = os.Getenv("DB_IP")
+var dbPort = os.Getenv("DB_PORT")
+var dbUser = os.Getenv("DB_USER")
+var dbPassword = os.Getenv("DB_PASSWORD")
 
 func main() {
-	db, err = database.ConnectToDatabase(db_ip, db_port, db_user, db_password)
+	db, err = database.ConnectToDatabase(dbIp, dbPort, dbUser, dbPassword)
 	if err != nil {
 		log.Fatal(err)
 	}
