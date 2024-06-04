@@ -198,6 +198,14 @@ func GetAllSurveyAnswers(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
+		if len(surveyAnswers) == 0 {
+			w.WriteHeader(http.StatusNoContent)
+			_, err := w.Write([]byte(`{"error": "no survey answers found"}`))
+			if err != nil {
+				return
+			}
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		jsonData, err := json.Marshal(surveyAnswers)
 		if err != nil {
@@ -214,6 +222,14 @@ func GetAllSurveyAnswers(w http.ResponseWriter, r *http.Request) {
 			log.Println("Internal server error")
 			w.WriteHeader(http.StatusInternalServerError)
 			_, err := w.Write([]byte(`{"error": "` + err.Error() + `"}`))
+			if err != nil {
+				return
+			}
+			return
+		}
+		if len(surveyAnswers) == 0 {
+			w.WriteHeader(http.StatusNoContent)
+			_, err := w.Write([]byte(`{"error": "no survey answers found"}`))
 			if err != nil {
 				return
 			}
