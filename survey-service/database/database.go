@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-func ConnectToDatabase(db_ip string, db_port string, db_username string, db_password string) (db *mongo.Client, err error) {
+func ConnectToDatabase(dbIp string, dbPort string, dbUsername string, dbPassword string) (db *mongo.Client, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	db, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+db_username+":"+db_password+"@"+db_ip+":"+db_port))
+	db, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb://"+dbUsername+":"+dbPassword+"@"+dbIp+":"+dbPort))
 	if db == nil {
 		return nil, fmt.Errorf("could not connect to database: %v", err)
 	}
